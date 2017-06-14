@@ -1,0 +1,29 @@
+Notes
+
+Steps
+
+1.**SETUP**
+	-npm init (creates a package.json file)
+	-Manually added dependencies to package.json
+		"dependencies":{
+  			"express":"*",
+  			"body-parser":"*"
+  		},
+	-npm install
+
+2.**app.js**
+	-add required files from node_modules(var express = require('express'); ect...)
+	-Create routes and insert middleware (scope is very important)
+
+3.**Template Engine (ejs)**
+	-Navagation
+		navbar-fixed-top changed to navbar-top to keep page content from being covered. Another solution would be to add padding into the body tag css
+
+4.**MongoDB**
+	-Usage
+		-Start session by navigating to mongodb/bin and run "mongod"
+		-In a new treminal window from mongodb/bin run "./mongo"
+
+
+***TIPS***
+	- '--save' tag will add itself to package.json
