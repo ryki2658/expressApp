@@ -4,7 +4,7 @@ var path = require('path');
 var expressValidator = require('express-validator');
 var mongojs = require('mongojs');
 
-var db = mongojs('customerapp', ['Users']);
+var db = mongojs('workOrderApp', ['Jobs']);
 
 var app = express();
 
@@ -54,52 +54,66 @@ app.use(expressValidator({
 }));
 
 app.get('/', function(req, res){
-	db.Users.find(function (err, docs) {
+	db.Jobs.find(function (err, docs) {
 	// docs is an array of all the documents in mycollection
 		console.log(docs);
 		res.render('index', {
-			title: 'Customers',
-			users: docs
+			title: 'Jobs',
+			jobs: docs
 		});
-	})
+	});
 	
 });
 
-// Add new users
-app.post('/users/add', function(req, res){
-	//console.log(req.body.first_name);
-
-	req.checkBody('first_name', 'First Name is required ').notEmpty();
-	req.checkBody('last_name', 'Last Name is required ').notEmpty();
-	req.checkBody('email', 'Email is required ').notEmpty();
-
-	var errors = req.validationErrors();
-
-	if(errors){
-		console.log('ERRORS');
-		res.render('index', {
-			title: 'Customers',
-			users: users,
-			errors: errors
-	});
-
-	} else {
-		var newUser = {
-			first_name: req.body.first_name,
-			last_name: req.body.last_name,
-			email: req.body.email
-		}
-		//Add user to MongoDB
-		db.Users.insert(newUser, function(err, result){
-			if(err){
-				console.log(err);
-			}
-			res.redirect('/');
+// Table of jobs in workOrderApp collection
+app.get('/tables', function(req, res){
+	db.Jobs.find(function(err, docs){
+		res.render('tables', {
+			title: 'Tables',
+			jobs: docs
 		});
-	}
-	console.log(newUser);
+	});
 });
 
+// Add new users
+app.post('/jobs/add', function(req, res){
+	//console.log(req.body.first_name);
+
+	req.checkBody('job_id', 'Job Id is required ').notEmpty();
+	req.checkBody('job_location', 'Job Location is required ').notEmpty();
+	req.checkBody('job_description', 'Job Description is required ').notEmpty();
+	req.checkBody('job_notes', 'Job Notes is required ').notEmpty();
+
+	var errors = req.validationErrors();
+	db.Jobs.find(function (err, docs) {
+		if(errors){
+			console.log('ERRORS');
+			res.render('index', {
+				title: 'Jobs',
+				jobs: docs,
+				errors: errors
+		});
+
+		} else {
+			console.log('newjob');
+			var newJob = {
+				job_id: req.body.job_id,
+				job_location: req.body.job_location,
+				job_description: req.body.job_description,
+				job_notes: req.body.job_notes,
+				job_date: req.body.job_date
+			}
+			//Add user to MongoDB
+			db.Jobs.insert(newJob, function(err, result){
+				if(err){
+					console.log(err);
+				}
+				res.redirect('/');
+			});
+		}
+		console.log(newJob);
+	});
+});
 app.listen(3000, function(){
 	console.log('Server Started on port 3000...');
 })
