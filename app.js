@@ -75,6 +75,20 @@ app.get('/tables', function(req, res){
 	});
 });
 
+// Filter based on location
+app.post('/jobs/filter', function(req, res){
+	var filter_id = {
+		job_location: req.body.sort_selection
+	};
+	console.log(filter_id);
+	db.Jobs.find(filter_id).toArray(function(err, docs){
+		res.render('tables', {
+			title: 'Tables',
+			jobs: docs
+		});
+	});
+});
+
 // Add new users
 app.post('/jobs/add', function(req, res){
 	//console.log(req.body.first_name);
@@ -102,7 +116,7 @@ app.post('/jobs/add', function(req, res){
 				job_description: req.body.job_description,
 				job_notes: req.body.job_notes,
 				job_date: req.body.job_date
-			}
+			};
 			//Add user to MongoDB
 			db.Jobs.insert(newJob, function(err, result){
 				if(err){
@@ -116,7 +130,7 @@ app.post('/jobs/add', function(req, res){
 });
 app.listen(3000, function(){
 	console.log('Server Started on port 3000...');
-})
+});
 
 
 
